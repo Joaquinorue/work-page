@@ -1,7 +1,3 @@
-"""
-Lambda handler de la API del portfolio.
-"""
-
 import json
 import os
 
@@ -21,11 +17,6 @@ def _response(status_code, body):
 
 
 def _list_by_type(item_type):
-    # Query, no Scan: usamos el GSI1 para pedir "todos los ítems de
-    # este tipo" sin leer la tabla entera. KeyConditionExpression solo
-    # compara la partition key por igualdad — es la limitación central
-    # de DynamoDB frente a un WHERE de SQL (no hay "buscar por
-    # cualquier campo" sin pagar el costo de un Scan completo).
     result = table.query(
         IndexName="GSI1",
         KeyConditionExpression=Key("GSI1PK").eq(item_type),
@@ -39,9 +30,6 @@ def _get_one(item_type, item_id):
 
 
 def _put_item(item_type, item_id, attributes):
-    # put_item sobrescribe el ítem completo si ya existía. Para este
-    # CRUD simple nos alcanza como "crear o actualizar" (upsert); no
-    # hay una operación separada de update todavía.
     item = {
         "PK": f"{item_type}#{item_id}",
         "SK": "METADATA",

@@ -1,6 +1,4 @@
-"""
-Infraestructura del portfolio joaquinorue.work
-"""
+"""Infrastructure for the joaquinorue.work portfolio site."""
 
 import json
 import mimetypes
@@ -12,8 +10,6 @@ import pulumi_aws as aws
 
 config = pulumi.Config()
 domain_name = config.require("domainName")
-# El subdominio que también vamos a servir (www.joaquinorue.work).
-# El apex (joaquinorue.work sin subdominio) siempre queda cubierto.
 sub_domain = config.get("subDomain") or "www"
 
 
@@ -57,11 +53,6 @@ cert_validation = aws.acm.CertificateValidation(
 pulumi.export("certificado_arn", cert.arn)
 pulumi.export("certificado_estado", cert.status)
 
-# ========================================================================
-# Paso 3: Bucket S3 privado con el contenido del sitio
-# ========================================================================
-
-
 site_bucket = aws.s3.BucketV2(
     "portfolio-site",
     bucket="joaquinorue.work-portfolio",
@@ -92,10 +83,6 @@ for filename in os.listdir(site_dir):
 
 pulumi.export("bucket_name", site_bucket.bucket)
 
-# ========================================================================
-# Paso 4: CloudFront + OAC + bucket policy
-# ========================================================================
-
 cv_bucket = aws.s3.get_bucket(bucket="cvjoaquinorue")
 
 pulumi.export("cv_bucket_arn", cv_bucket.arn)
@@ -111,7 +98,6 @@ distribution = aws.cloudfront.Distribution(
     "portfolio-distribution",
     enabled=True,
     default_root_object="index.html",
-    # PriceClass_100 = solo edge locations de Norteamérica y Europa.
     price_class="PriceClass_100",
     aliases=[domain_name, f"{sub_domain}.{domain_name}"],
     origins=[
@@ -143,11 +129,6 @@ distribution = aws.cloudfront.Distribution(
         max_ttl=86400,
     ),
     ordered_cache_behaviors=[
-        # Match exacto (no "/cv/*"): el objeto vive en la RAÍZ del
-        # bucket externo, sin ninguna carpeta — CloudFront no reescribe
-        # la URL antes de pedírsela al origin (a diferencia del
-        # rewrite-target de un Ingress), así que el path pattern tiene
-        # que coincidir con el key real del objeto en S3.
         aws.cloudfront.DistributionOrderedCacheBehaviorArgs(
             path_pattern="/CV_Joaquin_Orue.pdf",
             target_origin_id=cv_bucket.arn,
@@ -241,14 +222,9 @@ pulumi.export("distribution_id", distribution.id)
 pulumi.export("distribution_domain_name", distribution.domain_name)
 pulumi.export("sitio", f"https://{domain_name}")
 
-# ========================================================================
-# Paso 5: Tabla DynamoDB (single-table design)
-# ========================================================================
-
 content_table = aws.dynamodb.Table(
     "portfolio-content",
     name="portfolio-content",
-    # PAY_PER_REQUEST = on-demand, no hay que estimar capacidad de antemano.
     billing_mode="PAY_PER_REQUEST",
     hash_key="PK",
     range_key="SK",
@@ -270,9 +246,6 @@ content_table = aws.dynamodb.Table(
 
 pulumi.export("tabla_dynamodb", content_table.name)
 
-# ========================================================================
-# Rol de ejecución del Lambda
-# ========================================================================
 lambda_assume_role_policy = json.dumps(
     {
         "Version": "2012-10-17",
@@ -329,15 +302,10 @@ aws.iam.RolePolicy(
 
 pulumi.export("lambda_role_arn", lambda_role.arn)
 
-# ========================================================================
-# El Lambda de la API
-# ========================================================================
-
 api_lambda = aws.lambda_.Function(
     "portfolio-api-lambda",
     role=lambda_role.arn,
     runtime="python3.12",
-    # "archivo.función" dentro del zip: handler.py, función handler().
     handler="handler.handler",
     code=pulumi.FileArchive("./lambda"),
     timeout=10,
@@ -439,9 +407,6 @@ aws.route53.Record(
 
 pulumi.export("api_url", f"https://api.{domain_name}")
 
-# cv_bucket ya quedó definido más arriba (antes de crear "distribution",
-# porque lo necesitábamos como segundo origin). Acá solo faltaba la
-# policy que lo autoriza a servir vía CloudFront.
 cv_bucket_policy_document = distribution.arn.apply(
     lambda distribution_arn: json.dumps(
         {
