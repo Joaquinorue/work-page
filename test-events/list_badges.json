@@ -1,0 +1,4 @@
+{
+  "routeKey": "GET /items",
+  "queryStringParameters": { "type": "BADGE" }
+}

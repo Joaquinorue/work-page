@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joaquin Orue — DevOps / Infraestructura</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a; color: #e2e8f0;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow-x: hidden;
+    }
+
+    .blob {
+      position: fixed; border-radius: 50%; filter: blur(90px);
+      opacity: 0.18; z-index: 0; pointer-events: none;
+    }
+    .blob-1 {
+      width: 420px; height: 420px; background: #38bdf8;
+      top: -100px; left: -100px;
+      animation: float-1 22s ease-in-out infinite;
+    }
+    .blob-2 {
+      width: 380px; height: 380px; background: #818cf8;
+      bottom: -120px; right: -100px;
+      animation: float-2 26s ease-in-out infinite;
+    }
+    @keyframes float-1 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(60px, 40px); }
+    }
+    @keyframes float-2 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-50px, -30px); }
+    }
+
+    main { text-align: center; padding: 2rem; max-width: 640px; position: relative; z-index: 1; }
+
+    /* --- Animaciones de entrada: cada bloque aparece con fade + slide
+       sutil, en cascada (cada uno un poco más tarde que el anterior). --- */
+    .fade-in {
+      opacity: 0; transform: translateY(14px);
+      animation: fadeInUp 0.7s ease-out forwards;
+    }
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #avatar {
+      width: 140px; height: 140px; border-radius: 50%;
+      object-fit: cover; margin: 0 auto 1.25rem;
+      border: 3px solid #334155;
+      box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation-delay: 0s;
+    }
+    #avatar:hover {
+      transform: scale(1.04);
+      box-shadow: 0 0 0 8px rgba(56, 189, 248, 0.14);
+    }
+
+    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; animation-delay: 0.1s; }
+
+    p.rol {
+      color: #94a3b8; font-size: 1.2rem; margin-bottom: 2rem;
+      min-height: 1.5em; animation-delay: 0.2s;
+    }
+    #rol-typed::after {
+      content: "";
+      display: inline-block; width: 2px; height: 1.1em;
+      background: #38bdf8; margin-left: 2px; vertical-align: -0.15em;
+      animation: blink 0.9s step-end infinite;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .links { animation-delay: 0.3s; }
+    .links a {
+      color: #38bdf8; text-decoration: none; margin: 0 1rem; font-size: 1rem;
+      display: inline-block; transition: transform 0.2s ease, color 0.2s ease;
+    }
+    .links a:hover { transform: translateY(-2px); color: #7dd3fc; }
+
+    section.badges { margin-top: 2.5rem; animation-delay: 0.4s; }
+    section.badges h2 {
+      font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;
+      color: #64748b; margin-bottom: 0.75rem;
+    }
+    #badges-list {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;
+    }
+    #badges-list a {
+      display: inline-block; padding: 0.4rem 0.8rem; border-radius: 999px;
+      background: #1e293b; border: 1px solid #334155;
+      color: #e2e8f0; text-decoration: none; font-size: 0.9rem;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    #badges-list a:hover { border-color: #38bdf8; transform: translateY(-2px); }
+    #badges-status { color: #64748b; font-size: 0.9rem; }
+    #credly-link {
+      display: inline-block; margin-top: 1rem; font-size: 0.9rem;
+      color: #38bdf8; text-decoration: none; transition: transform 0.2s ease;
+    }
+    #credly-link:hover { transform: translateX(3px); }
+
+    p.wip { margin-top: 3rem; color: #64748b; font-size: 0.9rem; animation-delay: 0.5s; }
+
+    /* Quien tenga "reducir movimiento" activado en su sistema operativo
+       no recibe ninguna animación: ni fondo, ni entrada, ni typing
+       (el JS también revisa esto mismo antes de arrancar el efecto). */
+    @media (prefers-reduced-motion: reduce) {
+      .blob { display: none; }
+      .fade-in { opacity: 1; transform: none; animation: none; }
+      #rol-typed::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <main>
+    <img id="avatar" class="fade-in" src="perfil.jpg" alt="Foto de perfil de Joaquin Orué">
+    <h1 class="fade-in">Joaquín Orue</h1>
+    <p class="rol fade-in"><span id="rol-typed"></span></p>
+    <nav class="links fade-in">
+      <a href="https://github.com/Joaquinorue">GitHub</a>
+      <a href="https://www.linkedin.com/in/joaquinorue">LinkedIn</a>
+      <a href="mailto:joaquin.orue@gmail.com">Email</a>
+    <!-- <a href="/CV_Joaquin_Orue.pdf">CV</a> -->
+    </nav>
+
+    <section class="badges fade-in">
+      <h2>Certificaciones</h2>
+      <!-- Este contenido NO está en el HTML: lo llena el fetch() de
+           abajo cuando la página carga en el navegador de un visitante. -->
+      <div id="badges-list"></div>
+      <p id="badges-status">Cargando certificaciones…</p>
+      <a id="credly-link" href="#" hidden>Ver todos mis badges en Credly →</a>
+    </section>
+
+    <p class="wip fade-in">Powered by Pulumi & AWS</p>
+  </main>
+
+  <script>
+    // --- Efecto typing: cicla por tecnologías, tipeando y borrando.
+    // Antes de arrancar, respeta prefers-reduced-motion: si el
+    // visitante lo tiene activado, mostramos la lista fija sin animar.
+    const TECNOLOGIAS = [
+      "AWS", "Kubernetes", "Terraform", "Pulumi", "Python", "Docker",
+    ];
+    const rolEl = document.getElementById("rol-typed");
+    const prefiereMenosMovimiento = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (prefiereMenosMovimiento) {
+      rolEl.textContent = TECNOLOGIAS.join(" · ");
+    } else {
+      let palabraIdx = 0;
+      let charIdx = 0;
+      let borrando = false;
+
+      function tick() {
+        const palabra = TECNOLOGIAS[palabraIdx];
+        charIdx += borrando ? -1 : 1;
+        rolEl.textContent = palabra.slice(0, charIdx);
+
+        let pausa = borrando ? 40 : 90;
+
+        if (!borrando && charIdx === palabra.length) {
+          pausa = 1400; // pausa con la palabra completa antes de borrar
+          borrando = true;
+        } else if (borrando && charIdx === 0) {
+          borrando = false;
+          palabraIdx = (palabraIdx + 1) % TECNOLOGIAS.length;
+          pausa = 300;
+        }
+
+        setTimeout(tick, pausa);
+      }
+
+      tick();
+    }
+
+    // --- Carga de badges y links reales desde la API (Paso 8) ---
+    // Mismo dominio que registramos como custom domain de API Gateway.
+    // Es un origen DISTINTO al del sitio (joaquinorue.work vs
+    // api.joaquinorue.work) — por eso la API necesitó CORS.
+    const API_URL = "https://api.joaquinorue.work";
+
+    async function cargarBadges() {
+      const badgesList = document.getElementById("badges-list");
+      const status = document.getElementById("badges-status");
+
+      try {
+        const [badgesRes, linksRes] = await Promise.all([
+          fetch(`${API_URL}/items?type=BADGE`),
+          fetch(`${API_URL}/items?type=LINK`),
+        ]);
+
+        if (!badgesRes.ok || !linksRes.ok) {
+          throw new Error(`API respondió ${badgesRes.status}/${linksRes.status}`);
+        }
+
+        const badges = await badgesRes.json();
+        const links = await linksRes.json();
+
+        badges.forEach((badge) => {
+          const a = document.createElement("a");
+          a.href = badge.url;
+          a.target = "_blank";
+          a.rel = "noopener";
+          a.textContent = badge.nombre;
+          badgesList.appendChild(a);
+        });
+
+        const credly = links.find((link) => link.PK === "LINK#credly");
+        if (credly) {
+          const credlyLink = document.getElementById("credly-link");
+          credlyLink.href = credly.url;
+          credlyLink.hidden = false;
+        }
+
+        status.remove();
+      } catch (err) {
+        // Si la API no responde (o CORS bloquea el request), mostramos
+        // un mensaje en vez de dejar la sección vacía sin explicación.
+        status.textContent = "No se pudieron cargar las certificaciones.";
+        console.error("Error cargando badges:", err);
+      }
+    }
+
+    cargarBadges();
+  </script>
+</body>
+</html>

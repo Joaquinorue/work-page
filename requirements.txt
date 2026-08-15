@@ -1,0 +1,4 @@
+# Dependencias de Python del proyecto (equivalente conceptual a los
+# "required_providers" de Terraform, pero como librerías de Python).
+pulumi>=3.0.0,<4.0.0
+pulumi-aws>=6.0.0,<7.0.0

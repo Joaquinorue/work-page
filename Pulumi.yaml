@@ -1,0 +1,10 @@
+# Pulumi.yaml — la "partida de nacimiento" del proyecto.
+# Define QUÉ es este proyecto, no qué recursos crea (eso vive en __main__.py).
+name: portfolio
+description: Sitio personal joaquinorue.work — infraestructura con Pulumi + Python
+runtime:
+  name: python
+  options:
+    # Le dice a Pulumi que use el virtualenv de la carpeta ./venv
+    # para ejecutar el programa. Así no dependés del Python global de tu Mac.
+    virtualenv: venv

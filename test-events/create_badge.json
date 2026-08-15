@@ -1,0 +1,4 @@
+{
+  "routeKey": "POST /items",
+  "body": "{\"type\": \"badge\", \"id\": \"aws-saa\", \"nombre\": \"AWS Certified Solutions Architect – Associate\", \"url\": \"https://www.credly.com/badges/272e6102-71be-462f-bef2-63a639a50788\"}"
+}
